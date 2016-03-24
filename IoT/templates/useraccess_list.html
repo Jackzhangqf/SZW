@@ -1,0 +1,83 @@
+{%  extends "base_z.html" %}
+{%  block title %}设备访问配置{%  endblock %}
+{%  block main_content %}   
+<div class="row">
+	<div  class="col-md-12  col-sm-12  col-xs-12">
+		<div  class="x_panel">
+			<!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<x_title-->
+			<div class="x_title">
+				<h2>
+					设备访问配置列表
+					<small></small>
+				</h2>
+				<ul class="nav  navbar-right  panel_toolbox">
+					<li>
+						<a href="" class="collapse-link">
+							<i  class="fa fa-chevron-up"></i>
+						</a>
+					</li>
+					<li  class="dropdown">
+						<a href="#" class="dropdown-toggle"  aria-expanded="false" role="button" data-toggle="dropdown">
+							<i  class="fa fa-wrench"></i>
+						</a>
+						<ul   class="dropdown-menu" role="menu">
+							<li>
+								<a href="#">Settings 1</a>
+							</li>
+							<li>
+								<a href="#">Settings 2</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="" class="close-link">
+							<i class="fa  fa-close"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!--x_title_end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+			<div  class="x_content">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>用户</th>
+							<th>区域</th>
+							<th>密钥</th>
+							<th>区域编号</th>
+							<th>设备编号</th>
+							<th>写权限</th>
+							<th>读权限</th>
+							<th>控制权限</th>
+							<th>修改或添加时间</th>
+						</tr>
+					</thead>
+					<tbody>
+					{%  for useraccess  in  object_list %}
+						<tr>
+							<th scope="row">{{  useraccess.id  }}</th>
+							<td>{{  useraccess.user }}</td>
+							<td>{{  useraccess.region_or_dev_flag }}</td>
+							<td>{{  useraccess.region_access_key}}</td>
+							<td>{{  useraccess.region_id}}</td>
+							<td>{{  useraccess.dev_id}}</td>
+							<td>{{  useraccess.permission_w}}</td>
+							<td>{{  useraccess.permission_r}}</td>
+							<td>{{  useraccess.permission_c}}</td>
+							<td>{{  useraccess.date_time}}</td>
+							
+
+
+						</tr>
+					{%   endfor  %}
+					</tbody>
+				</table>
+			</div>
+			<!--x_content_end-->
+		</div>
+	</div>
+</div>
+{%     endblock %}

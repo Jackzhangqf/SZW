@@ -3,7 +3,7 @@
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.9/topics/http/urls/
 Examples:
-Function views
+Function views 
     1. Add an import:  from my_app import views
     2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
 Class-based views
@@ -13,10 +13,20 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url,patterns
 from django.contrib import admin
 from django.conf.urls import include
+from blog.views import *
+from django.conf   import   settings
 urlpatterns = [
     url(r'^blog/',include('blog.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^form/$', login),
+    url(r'^IoT/',include('IoT.urls')),
+    url(r'^gallery/',include('gallery.urls')),
 ]
+if settings.DEBUG:
+    # static files (images, css, javascript, etc.)
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+        'document_root': settings.MEDIA_ROOT}))

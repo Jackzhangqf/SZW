@@ -1,0 +1,40 @@
+{%  extends  "base_z.html"%}
+{%  block headcss %}
+
+    <!-- editor -->
+    <!--link href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+    <link href="/static/css/editor/external/google-code-prettify/prettify.css" rel="stylesheet">
+    <link href="/static/css/editor/index.css" rel="stylesheet"-->
+    <!-- select2 -->
+    <link href="/static/css/select/select2.min.css" rel="stylesheet">
+    <!-- switchery -->
+    <!--link rel="stylesheet" href="/static/css/switchery/switchery.min.css" /-->
+{%  endblock %}
+{%  block  javasource %}
+<!-- tags -->
+        <script src="/static/js/tags/jquery.tagsinput.min.js"></script>
+        <!-- switchery -->
+        <script src="/static/js/switchery/switchery.min.js"></script>
+        <!-- daterangepicker -->
+        <script type="text/javascript" src="/static/js/moment.min2.js"></script>
+        <script type="text/javascript" src="/static/js/datepicker/daterangepicker.js"></script>
+        <!-- richtext editor -->
+        <script src="/static/js/editor/bootstrap-wysiwyg.js"></script>
+        <script src="/static/js/editor/external/jquery.hotkeys.js"></script>
+        <script src="/static/js/editor/external/google-code-prettify/prettify.js"></script>
+        <!-- select2 -->
+        <script src="/static/js/select/select2.full.js"></script>
+        <!-- form validation -->
+        <script type="text/javascript" src="/static/js/parsley/parsley.min.js"></script>
+        <!-- textarea resize -->
+        <script src="/static/js/textarea/autosize.min.js"></script>
+        <script>
+            autosize($('.resizable_textarea'));
+        </script>
+        <!-- Autocomplete -->
+        <script type="text/javascript" src="/static/js/autocomplete/countries.js"></script>
+        <script src="/static/js/autocomplete/jquery.autocomplete.js"></script>
+
+        {%  block java_script %}
+        {%  endblock %}
+{%  endblock %}

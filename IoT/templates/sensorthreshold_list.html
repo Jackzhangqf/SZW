@@ -1,0 +1,85 @@
+{%  extends "form_base.html" %}
+{%  block title %}阈值信息{%  endblock %}
+{%  block main_content %}   
+<div class="row">
+	<div  class="col-md-12  col-sm-12  col-xs-12">
+		<div  class="x_panel">
+			<!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<x_title-->
+			<div class="x_title">
+				<h2>
+					阈值配置文件列表
+					<small></small>
+				</h2>
+				<ul class="nav  navbar-right  panel_toolbox">
+					<li>
+						<a href="" class="collapse-link">
+							<i  class="fa fa-chevron-up"></i>
+						</a>
+					</li>
+					<li  class="dropdown">
+						<a href="#" class="dropdown-toggle"  aria-expanded="false" role="button" data-toggle="dropdown">
+							<i  class="fa fa-wrench"></i>
+						</a>
+						<ul   class="dropdown-menu" role="menu">
+							<li>
+								<a href="#">Settings 1</a>
+							</li>
+							<li>
+								<a href="#">Settings 2</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="" class="close-link">
+							<i class="fa  fa-close"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!--x_title_end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+			<div  class="x_content">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>用户</th>
+							<th>传感器编号</th>
+							<th>阈值标志</th>
+							<th>阈值</th>
+							<th>阈值使能位</th>
+						</tr>
+					</thead>
+					<tbody>
+					{%  for sensort  in  object_list %}
+						<tr>
+							<th scope="row">{{  sensort.id  }}</th>
+							<td>{{  sensort.user.username }}</td>
+							<td> {{  sensort.sensor_id }} </td>
+							<td>{%  if sensort.threshold_flag %}
+										上限
+										{% else %}
+										下限
+							{% endif %}
+							</td>
+							<td>{{  sensort.threshold}}</td>
+							<td>
+							{%  if sensort.threshold_e %}
+										已使用
+										{% else %}
+										未使用
+							{% endif %}
+							</td>
+							<td><a  href={%  url 'sensorthresholdupdate'  sensort.id %}>修改</a></td>
+							<td><a href={% url  'sensorthresholddelete' sensort.id %}>删除<span class="glyphicon glyphicon-tag" aria-hidden="true"></span></a></td>
+						</tr>
+					{%   endfor  %}
+					</tbody>
+				</table>
+			</div>
+			<!--x_content_end-->
+		</div>
+	</div>
+</div>
+{%     endblock %}

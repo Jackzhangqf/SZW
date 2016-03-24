@@ -1,0 +1,77 @@
+{%  extends "base_z.html" %}
+{%  block title %}传感器信息{%  endblock %}
+{%  block main_content %}   
+<div class="row">
+	<div  class="col-md-12  col-sm-12  col-xs-12">
+		<div  class="x_panel">
+			<!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<x_title-->
+			<div class="x_title">
+				<h2>
+					可访问设备的传感器列表
+					<small></small>
+				</h2>
+				<ul class="nav  navbar-right  panel_toolbox">
+					<li>
+						<a href="" class="collapse-link">
+							<i  class="fa fa-chevron-up"></i>
+						</a>
+					</li>
+					<li  class="dropdown">
+						<a href="#" class="dropdown-toggle"  aria-expanded="false" role="button" data-toggle="dropdown">
+							<i  class="fa fa-wrench"></i>
+						</a>
+						<ul   class="dropdown-menu" role="menu">
+							<li>
+								<a href="#">Settings 1</a>
+							</li>
+							<li>
+								<a href="#">Settings 2</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="" class="close-link">
+							<i class="fa  fa-close"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!--x_title_end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+			<div  class="x_content">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>传感器编号</th>
+							<th>传感器描述</th>
+							<th>所属设备</th>
+							<th>传感器类型</th>
+							<th>传感器名称</th>
+							<th>添加或修改时间</th>
+						</tr>
+					</thead>
+					<tbody>
+					{%  for sensor  in  object_list %}
+						<tr>
+							<th scope="row">{{  sensor.id  }}</th>
+							<td>{{  sensor.sensor_id  }}</td>
+							<td>{{  sensor.sensor_info }}</td>
+							<td>{{  sensor.dev.dev_name }}</td>
+							<td>{{  sensor.sensor_type}}</td>
+							<td>{{  sensor.sensor_name}}</td>
+							<td>{{  sensor.date_time}}</td>
+							<td><a href={%  url  'sensordetail' sensor.id %}>详情<span class="glyphicon glyphicon-tag" aria-hidden="true"></span></a></td>
+							<td><a href={% url  'sensorthresholdcreate' sensor.sensor_id %}>生成阈值<span class="glyphicon glyphicon-tag" aria-hidden="true"></span></a></td>
+
+						</tr>
+					{%   endfor  %}
+					</tbody>
+				</table>
+			</div>
+			<!--x_content_end-->
+		</div>
+	</div>
+</div>
+{%     endblock %}

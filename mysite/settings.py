@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
+    'IoT',
+    'gallery',
 #    'liveupdate',
 ]
 
@@ -79,9 +82,9 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'blog',
-	'USER':'blog',
-	'PASSWORD':'blog',
+        'NAME': 'IoT',
+	'USER':'iot',
+	'PASSWORD':'123',
 	'HOST':'localhost',
     }
 }
@@ -120,8 +123,18 @@ USE_L10N = True
 
 USE_TZ = True
 
+FILE_CHARSET = 'utf-8'
 
+DEFAULT_CHARSET = 'utf-8'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-
+PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+STATIC_ROOT=os.path.join(os.path.dirname(PROJECT_PATH),'static')
 STATIC_URL = '/static/'
+STATICFILES_DIRS=(
+                'mysite/static',
+                'IoT/static/',
+    )
+MEDIA_ROOT = os.path.join(os.path.dirname(PROJECT_PATH),'media')
+#MEDIA_ROOT =  '/home/jack/django-dir/mysite/media'
+MEDIA_URL  =  '/media/'

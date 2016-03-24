@@ -1,0 +1,116 @@
+{%  extends "form_base.html" %}
+{%  block title %}配置 {%  endblock %}
+{%  block main_content %}   
+<div class="row">
+	<div  class="col-md-12  col-sm-12  col-xs-12">
+		<div  class="x_panel">
+			<!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<x_title-->
+			<div class="x_title">
+				<h2>
+					生成配置文件
+					<!--small>different  from  elements</small-->
+				</h2>
+				<ul class="nav  navbar-right  panel_toolbox">
+					<li>
+						<a href="" class="collapse-link">
+							<i  class="fa fa-chevron-up"></i>
+						</a>
+					</li>
+					<li  class="dropdown">
+						<a href="#" class="dropdown-toggle"  aria-expanded="false" role="button" data-toggle="dropdown">
+							<i  class="fa fa-wrench"></i>
+						</a>
+						<ul   class="dropdown-menu" role="menu">
+							<li>
+								<a href="#">Settings 1</a>
+							</li>
+							<li>
+								<a href="#">Settings 2</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="" class="close-link">
+							<i class="fa  fa-close"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!--x_title_end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+			<div  class="x_content">
+				<form action="" method="post" class="form-horizontal form-label-left">
+					{%  csrf_token %}
+					
+					{%  for  field  in  form %}
+                                    			<div class="form-group">
+                                    			<label class="control-label col-md-3 col-sm-3 col-xs-12" for={{ field.id_for_label }}>{{ field.label }} <span class="required">*</span>
+                                            		</label>
+                                           		 <div  class="col-md-6 col-sm-6 col-xs-12">
+                                            		{{ field }}
+                                            		<p class="bg-danger">{{ field.errors.as_text }} </p>
+                                            		<p class="bg-info">{{ field.help_text }} </p>
+                                            		
+                                            		</div>
+                                            		
+                                    			</div>
+                                    			{%  endfor %}
+                                    			<div class="ln_solid"></div>
+                                    			<div class="form-group">
+                                            		<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                                		<button type="submit" class="btn btn-primary">生成</button>
+                                            		</div>
+                                        			</div>
+					
+				</form>
+			</div>
+			<!--x_content_end-->
+			 <script type="text/javascript">
+                        			$(document).ready(function () {
+                            		$('#id_section').daterangepicker({
+                                			singleDatePicker: true,
+                                			calender_style: "picker_4"
+                            		}, function (start, end, label) {
+                                		console.log(start.toISOString(), end.toISOString(), label);
+                            		});
+                        			});
+                    		</script>
+		</div>
+	</div>
+</div>
+{%     endblock %}
+{%  block java_script %}
+<script type="text/javascript">
+            $(function () {
+                'use strict';
+                var countriesArray = $.map(countries, function (value, key) {
+                    return {
+                        value: value,
+                        data: key
+                    };
+                });
+                // Initialize autocomplete with custom appendTo:
+                $('#autocomplete-custom-append').autocomplete({
+                    lookup: countriesArray,
+                    appendTo: '#autocomplete-container'
+                });
+            });
+        </script>
+ <!-- select2 -->
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".select2_single").select2({
+                    placeholder: "Select a state",
+                    allowClear: true
+                });
+                $(".select2_group").select2({});
+                $(".select2_multiple").select2({
+                    maximumSelectionLength: 4,
+                    placeholder: "With Max Selection limit 4",
+                    allowClear: true
+                });
+            });
+        </script>
+        <!-- /select2 -->
+{%  endblock %}

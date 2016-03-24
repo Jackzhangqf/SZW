@@ -1,0 +1,111 @@
+{%  extends "base_z.html" %}
+{%  block title %}This is  a form {%  endblock %}
+{%  block main_content %}   
+<div class="row">
+	<div  class="col-md-12  col-sm-12  col-xs-12">
+		<div  class="x_panel">
+			<!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<x_title-->
+			<div class="x_title">
+				<h2>
+					Form Design
+					<small>different  from  elements</small>
+				</h2>
+				<ul class="nav  navbar-right  panel_toolbox">
+					<li>
+						<a href="" class="collapse-link">
+							<i  class="fa fa-chevron-up"></i>
+						</a>
+					</li>
+					<li  class="dropdown">
+						<a href="#" class="dropdown-toggle"  aria-expanded="false" role="button" data-toggle="dropdown">
+							<i  class="fa fa-wrench"></i>
+						</a>
+						<ul   class="dropdown-menu" role="menu">
+							<li>
+								<a href="#">Settings 1</a>
+							</li>
+							<li>
+								<a href="#">Settings 2</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="" class="close-link">
+							<i class="fa  fa-close"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!--x_title_end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+			<div  class="x_content">
+				
+                                    <br>
+                                    <form novalidate="" id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left">
+                                    	{% csrf_token %}
+                                    {%  for  field  in  form %}
+                                    <div class="form-group">
+                                    	<label class="control-label col-md-3 col-sm-3 col-xs-12" for={{ field.id_for_label }}>{{ field.label }} <span class="required">*</span>
+                                            </label>
+                                            <div  class="col-md-6 col-sm-6 col-xs-12">
+                                            	{{ field }}
+                                            </div>
+                                    </div>
+                                    {%  endfor %}
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first_name">First name <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <input data-parsley-id="0994" id="first-name" required="required" class="form-control col-md-7 col-xs-12" type="text"><!--ul id="parsley-id-0994" class="parsley-errors-list"></ul-->
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Last Name <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <input data-parsley-id="5634" id="last-name" name="last-name" required="required" class="form-control col-md-7 col-xs-12" type="text"><ul id="parsley-id-5634" class="parsley-errors-list"></ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Middle Name / Initial</label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <input data-parsley-id="4771" id="middle-name" class="form-control col-md-7 col-xs-12" name="middle-name" type="text"><ul id="parsley-id-4771" class="parsley-errors-list"></ul>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Gender</label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <div id="gender" class="btn-group" data-toggle="buttons">
+                                                    <label class="btn btn-default" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+                                                        <input data-parsley-id="3270" data-parsley-multiple="gender" name="gender" value="male" type="radio"> &nbsp; Male &nbsp;
+                                                    </label><ul id="parsley-id-multiple-gender" class="parsley-errors-list"></ul>
+                                                    <label class="btn btn-primary active" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+                                                        <input data-parsley-id="3270" data-parsley-multiple="gender" name="gender" value="female" checked="" type="radio"> Female
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Date Of Birth <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <input data-parsley-id="4163" id="birthday" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text"><ul id="parsley-id-4163" class="parsley-errors-list"></ul>
+                                            </div>
+                                        </div>
+                                        <div class="ln_solid"></div>
+                                        <div class="form-group">
+                                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                                <button type="submit" class="btn btn-primary">Cancel</button>
+                                                <button type="submit" class="btn btn-success">Submit</button>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                
+			</div>
+			<!--x_content_end-->
+		</div>
+	</div>
+</div>
+{%     endblock %}

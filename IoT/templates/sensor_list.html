@@ -38,6 +38,32 @@
 				<div class="clearfix"></div>
 			</div>
 			<!--x_title_end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+			<div>
+			<form class="form-inline" role="form"  method="GET">
+				{%  csrf_token %}
+					<!--div class="form-group" >
+					<label  for="s_time">日期检索</label>
+   					<div  id="datetimepicker" date-date="2016-05-16 14:14:14" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="s_time" data-link-format="yyyy-mm-dd hh:ii:ss">
+      						<input type="text"  class="form-control" id="s_time" 
+        						 placeholder="请输入名称" value="" readonly>
+   					</div>
+   					<input type="hidden" id="s_time" value="" /><br/>
+   					</div-->
+   					 <!--div class="input-append date" id="datetimepicker" data-date="12-02-2012" data-date-format="dd-mm-yyyy"-->
+   					 <div class="form-group">
+   					 <label  for="s_name">传感器名称:</label>
+    					<input type="text" name="s_name" value="{{request.GET.s_name}}" id="s_name" >
+    					</div>
+
+    					<!--/div--> 
+   					<button type="submit" class="btn btn-default"> 搜索 </button>
+			</form>
+			 
+			<!--form method="GET">
+				<input type='number' name="s_value">
+				<input type="submit">
+			</form-->
+			</div>
 			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
 			<div  class="x_content">
 				<table class="table  table-hover">
@@ -58,7 +84,7 @@
 							<th scope="row">{{  sensor.id  }}</th>
 							<td>{{  sensor.sensor_id  }}</td>
 							<td>{{  sensor.sensor_info }}</td>
-							<td>{{  sensor.dev.dev_name }}</td>
+							<td><a href={% url 'devdetail' sensor.dev.id %}>{{  sensor.dev.dev_name }}</a></td>
 							<td>{{  sensor.sensor_type}}</td>
 							<td>{{  sensor.sensor_name}}</td>
 							<td>{{  sensor.date_time}}</td>
@@ -69,6 +95,27 @@
 					{%   endfor  %}
 					</tbody>
 				</table>
+				<div class="btn-group">
+
+  					<!--button  class="btn btn-default"--><a class="btn btn-default" href="{{ request.path}}?s_name={{ request.GET.s_name }}&page=1"><<</a><!--/button-->
+  					{% if  page_obj.has_previous %}
+  					<a  class="btn btn-default" href="{{  request.path }}?s_name={{ request.GET.s_name }}&page={{ page_obj.previous_page_number }}">上一页</a>
+  					{% else %}
+  					<a class="btn btn-default disabled">上一页</a>
+  					{% endif %}
+
+
+  					{%  for i in page_obj.paginator.page_range %}
+  					<a  {% if page_obj.number == i %}class="btn btn-success  active" {% else %} class="btn btn-default "{% endif%} href="{{ request.path }}?s_name={{ request.GET.s_name }}&page={{ i }}">{{ i }}</a>
+  					{% endfor %}
+
+  					{%  if page_obj.has_next %}
+  					<a class="btn btn-default" href="{{ request.path}}?s_name={{ request.GET.s_name }}&page={{ page_obj.next_page_number }}">下一页</a>
+  					{% else %}
+  					<a class="btn btn-default disabled">下一页</a>
+  					{% endif %}
+  					<a class="btn btn-default" href="{{ request.path }}?s_name={{ request.GET.s_name }}&page={{ page_obj.paginator.num_pages}}">>></a>
+				</div>
 			</div>
 			<!--x_content_end-->
 		</div>

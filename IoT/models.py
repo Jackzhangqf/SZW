@@ -113,11 +113,25 @@ class DevM(models.Model):
 		return str(self.dev_id)
 class DevAdmin(admin.ModelAdmin):
 	list_display=('dev_id','dev_name','access_key')
+
+SENSOR_TYPE=(
+		('A',u'电流'),
+		('V',u'电压'),
+		('T',u'温度'),
+		('H',u'湿度'),
+		('P',u'压力'),
+		('L',u'位置'),
+		('Y',u'时间'),
+		('F',u'文件'),
+		('I',u'消息'),
+		('J',u'图片'),
+	)
+
 class SensorM(models.Model):
 	sensor_id = models.PositiveIntegerField(unique = True,verbose_name=(u'传感器编号'))
 	sensor_info = models.CharField(max_length=200,blank=True,verbose_name=(u'传感器描述'))
 	dev = models.ForeignKey(DevM,verbose_name=(u'传感器所属设备'))
-	sensor_type = models.CharField(max_length = 10,verbose_name=(u'传感器类型'))
+	sensor_type = models.CharField(max_length = 10,choices=SENSOR_TYPE,verbose_name=(u'传感器类型'))
 	sensor_name = models.CharField(max_length=50,blank=True,verbose_name=(u'传感器名称'))
 	date_time = models.DateTimeField(default=timezone.now,verbose_name=(u'修改时间'))
 	def __unicode__(self):

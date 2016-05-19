@@ -38,11 +38,12 @@ from django.http import HttpResponse , HttpResponseRedirect,HttpResponseNotFound
 
 # (12)   FileResponse 
 from django.contrib.auth import authenticate,login,logout
-import time
+import time,datetime,json
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from  IoT.forms import  *
 from  IoT.models  import *
+from django.core import serializers
 #----------------------------------------------------------generic view
 from  django.views.generic.list import  ListView
 from  django.views.generic.detail  import  DetailView
@@ -203,6 +204,7 @@ class  RegionListV(RDBaseList):
 	template_name = "region_list.html"
 	model = RegionM
 	queryset = RegionM.objects.all()
+	paginate_by=1
 	def get_queryset(self):
 		queryset=super(RegionListV,self).get_queryset()
 		user = User.objects.get(username=self.request.user)
@@ -219,7 +221,16 @@ class  RegionListV(RDBaseList):
 			q2=q1.region.region_id
 			if  q2  not  in  q_list:
 				q_list.append(q2)
-		return queryset.filter(region_id__in=q_list)
+		#----------------------------add search function 2016/05/18
+		q1=queryset.filter(region_id__in=q_list)
+		q2=None
+		s_name=self.request.GET.get('s_name')
+		if s_name:
+			q2=q1.filter(region_name__icontains=s_name)
+		else:
+			q2=q1
+		#-----------------------end search function
+		return  q2
 
 #class RegionDetailV(DetailView):
 #	template_name = "region_detail.html"
@@ -251,6 +262,7 @@ class  RegionDetailV(ListView):
 	template_name = "region_detail.html"
 	model = DevM
 	queryset = DevM.objects.all()
+	paginate_by=1
 	def get(self, request, *args, **kwargs):
 		self.object_list = self.get_queryset(**kwargs)
 		allow_empty = self.get_allow_empty()
@@ -298,8 +310,17 @@ class  RegionDetailV(ListView):
 				#queryset =  get_list_or_404(DevM,dev_id__in=q_list)
 		else:
 			raise Http404(_('List_Invalid page Not accessprofile!'))
-		print  q_list
-		return  queryset.filter(dev_id__in=q_list) 
+		#print  q_list
+		#----------------------add search function 2016/05/18
+		q1=queryset.filter(dev_id__in=q_list) 
+		q2=None
+		s_name=self.request.GET.get('s_name')
+		if s_name:
+			q2=q1.filter(dev_name__icontains=s_name)
+		else:
+			q2=q1
+		#--------------end search function
+		return  	q2
 	def  get_context_data(self,**kwargs):
 		context  =  super(RegionDetailV,self).get_context_data(**kwargs)
 		context['user'] = self.request.user
@@ -318,6 +339,7 @@ class DevListV(RDBaseList):
 	template_name = "dev_list.html"
 	model = DevM
 	queryset = DevM.objects.all()
+	paginate_by=1
 	def get_queryset(self):
 		queryset=super(DevListV,self).get_queryset()
 		user = User.objects.get(username=self.request.user)
@@ -338,7 +360,16 @@ class DevListV(RDBaseList):
 		for  access_d  in  access_dev:
 			if  access_d  not  in   q_list:
 				q_list.append(access_d.dev_id)
-		return queryset.filter(dev_id__in=q_list)
+		#----------------------------add search function 2016/05/18
+		q1=queryset.filter(dev_id__in=q_list)
+		q2=None
+		s_name=self.request.GET.get('s_name')
+		if s_name:
+			q2=q1.filter(dev_name__icontains=s_name)
+		else:
+			q2=q1
+		#-----------------------end search function
+		return  q2
 """
 class  DevDetailV(DetailView):
 	template_name = "dev_detail.html"
@@ -366,11 +397,13 @@ class  DevDetailV(DetailView):
 			context["user"] = self.request.user
 		return context
 """				
-
+SENSOR_TYPELIST=['A','V','T','H','P','L','Y','F','I','J']
+		
 class  DevDetailV(ListView):
 	template_name = "dev_detail.html"
 	model = SensorM
 	queryset = SensorM.objects.all()
+	paginate_by=1
 	def get(self, request, *args, **kwargs):
 		self.object_list = self.get_queryset(**kwargs)
 		allow_empty = self.get_allow_empty()
@@ -432,7 +465,26 @@ class  DevDetailV(ListView):
 				raise Http404(_('Invalid page Not accessprofile!'))
 		#context["sensor_list"] = sensor_list
 		#context["user"] = self.request.user
-		return queryset.filter(id__in=q_list)
+		#-------------------add search function 2016/05/18
+		s_name=self.request.GET.get('s_name')
+		s_type = self.request.GET.get('s_type')
+		q1= queryset.filter(id__in=q_list)
+		q2=None
+		q3=None
+		if s_name:
+			q2=q1.filter(sensor_name__icontains=s_name)
+		else:
+			q2=q1
+		if s_type:
+			s_typeint=int(s_type)
+			if s_typeint<11 and s_typeint>0:
+				q3=q2.filter(sensor_type=SENSOR_TYPELIST[s_typeint-1])
+			else:
+				q3=q2
+		else:
+			q3=q2
+		#-------------------end search function
+		return 	q3
 
 
 
@@ -442,6 +494,7 @@ class SensorListV(RDBaseList):
 	template_name = "sensor_list.html"
 	model = SensorM
 	queryset = SensorM.objects.all()
+	paginate_by=2
 	def  get_queryset(self):
 		queryset=super(SensorListV,self).get_queryset()
 		#get the user's dev_list----------start
@@ -473,8 +526,16 @@ class SensorListV(RDBaseList):
 				#raise Http404(_('1111Invalid page Not accessprofile!'))
 			for q  in  qq1 :
 				qqq_list.append(q.id)
-
-		return  queryset.filter(id__in=qqq_list)
+		#----------------------------add search function 2016/05/18
+		q1=queryset.filter(id__in=qqq_list)
+		q2=None
+		s_name=self.request.GET.get('s_name')
+		if s_name:
+			q2=q1.filter(sensor_name__icontains=s_name)
+		else:
+			q2=q1
+		#-----------------------end search function
+		return q2  
 """
 class  SensorDetailV(DetailView):
 	template_name = "sensor_detail.html"
@@ -507,6 +568,7 @@ class  SensorDetailV(ListView):
 	template_name = "sensor_detail.html"
 	model = DataM
 	queryset = DataM.objects.all()
+	paginate_by=100
 	def get(self, request, *args, **kwargs):
 		self.object_list = self.get_queryset(**kwargs)
 		allow_empty = self.get_allow_empty()
@@ -536,10 +598,12 @@ class  SensorDetailV(ListView):
 		else:
 			raise Http404(_('Invalid page Not accessprofile!'))
 		context['object'] = obj
+		context['objects_json']=serializers.serialize("json",context['object_list'])
 		return  context
 	def  get_queryset(self,**kwargs):
 		queryset =  super(SensorDetailV,self).get_queryset()
 		obj_pk=kwargs.get('sensor_pk',None)
+		#search_date=self.request.GET.get('date')
 		q_list = []
 		if  obj_pk :
 			obj = get_object_or_404(SensorM,id=obj_pk)
@@ -570,12 +634,53 @@ class  SensorDetailV(ListView):
 		
 		#context["data_list"] = data_list[0:6]
 		#context["user"] = self.request.user
-		return queryset.filter(id__in=q_list)
+		#-----------------search function 2016/05/17
+		s_st=self.request.GET.get('s_st')
+		s_et=self.request.GET.get('s_et')
+		s_value=self.request.GET.get('s_value')
+		if self.request.GET.get('s_gle'):
+			s_gle = int(self.request.GET.get('s_gle'))
+		else:
+			s_gle = None
+		q1= queryset.filter(id__in=q_list)
+		if s_st:
+			st_struct=time.strptime(s_st,"%Y-%m-%d  %H:%M:%S")
+			q2=q1.exclude(date_time__lt=datetime.datetime(st_struct.tm_year,
+				st_struct.tm_mon,st_struct.tm_mday,st_struct.tm_hour,
+				st_struct.tm_min,st_struct.tm_sec))
+			if s_et:
+				et_struct=time.strptime(s_et,"%Y-%m-%d  %H:%M:%S")
+				q3=q2.exclude(date_time__gt=datetime.datetime(et_struct.tm_year,
+					et_struct.tm_mon,et_struct.tm_mday,et_struct.tm_hour,
+					et_struct.tm_min,et_struct.tm_sec))
+			else:
+				q3=q2.exclude(date_time__gt=datetime.datetime(st_struct.tm_year,
+					st_struct.tm_mon,st_struct.tm_mday,23,59,59))
+				#q3=q2
+		else:
+			q3=q1.exclude(date_time__lt=datetime.date.today()).order_by("-date_time")
+		#-----------------------search end
+		#print type(s_value) #------->type is unicode
+		if s_value and s_gle:
+			try:
+				if s_gle==0:
+					q4=q3
+				elif s_gle==1:
+					q4=q3.filter(data__gte=float(s_value))#
+				elif s_gle==2:
+					q4=q3.filter(data__lte=float(s_value))#
+			except Exception, e:
+				q4=q3
+		else:
+			q4=q3
+
+		return  q4
 #DataM
 #SensorThresholdM
 class SensorThresholdListV(ListView):
 	template_name = "sensorthreshold_list.html"
 	model = SensorThresholdM
+	paginate_by=2
 	def   get_queryset(self):
 		queryset= super(SensorThresholdListV,self).get_queryset()
 		return queryset.filter(user=self.request.user)

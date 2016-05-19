@@ -1,5 +1,5 @@
 {%  extends "base_z.html" %}
-{%  block title %}{{  object.dev_name }}》设备信息{%  endblock %}
+{%  block title %}{{  object.dev_name }}>>设备信息{%  endblock %}
 {%  block main_content %}   
 <div class="row">
 	<div  class="col-md-12  col-sm-12  col-xs-12">
@@ -58,7 +58,7 @@
 							<th scope="row">{{  object.id  }}</th>
 							<td>{{  object.dev_id }}</td>
 							<td>{{  object.dev_info }}</td>
-							<td>{{  object.region.region_name }}</td>
+							<td><a href={% url 'regiondetail' object.region.id %}>{{  object.region.region_name }}</a></td>
 							<td>{{  object.dev_name}}</td>
 							<td>{{  object.access_key}}</td>
 							<td>{{  object.date_time}}</td>
@@ -69,6 +69,7 @@
 					
 					</tbody>
 				</table>
+				
 			</div>
 			<!--x_content_end-->
 		</div>
@@ -80,7 +81,7 @@
 			<!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<x_title-->
 			<div class="x_title">
 				<h2>
-					可访问设备的传感器列表
+					可访问所属传感器列表
 					<small></small>
 				</h2>
 				<ul class="nav  navbar-right  panel_toolbox">
@@ -109,6 +110,50 @@
 					</li>
 				</ul>
 				<div class="clearfix"></div>
+			</div>
+
+			<div>
+			<form class="form-inline" role="form"  method="GET">
+				{%  csrf_token %}
+					<!--div class="form-group" >
+					<label  for="s_time">日期检索</label>
+   					<div  id="datetimepicker" date-date="2016-05-16 14:14:14" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="s_time" data-link-format="yyyy-mm-dd hh:ii:ss">
+      						<input type="text"  class="form-control" id="s_time" 
+        						 placeholder="请输入名称" value="" readonly>
+   					</div>
+   					<input type="hidden" id="s_time" value="" /><br/>
+   					</div-->
+   					 <!--div class="input-append date" id="datetimepicker" data-date="12-02-2012" data-date-format="dd-mm-yyyy"-->
+   					 <div class="form-group">
+   					 <label  for="s_name">传感器名称:</label>
+    					<input type="text" name="s_name" value="{{request.GET.s_name}}" id="s_name" >
+    					</div>
+
+    					<div class="form-group">
+   					 <label  for="s_type">传感器类型:</label>
+   					 <select name="s_type" id="s_type">
+   					 	<option value="0">无</option>
+   					 	<option value="1">电流</option>
+   					 	<option value="2">电压</option>
+   					 	<option value="3">温度</option>
+   					 	<option value="4">湿度</option>
+   					 	<option value="5">压力</option>
+   					 	<option value="6">位置</option>
+   					 	<option value="7">时间</option>
+   					 	<option value="8">文件</option>
+   					 	<option value="9">消息</option>
+   					 	<option value="10">图片</option>
+   					 </select>
+    					
+    					</div>
+    					<!--/div--> 
+   					<button type="submit" class="btn btn-default"> 搜索 </button>
+			</form>
+			 
+			<!--form method="GET">
+				<input type='number' name="s_value">
+				<input type="submit">
+			</form-->
 			</div>
 			<!--x_title_end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
 			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
@@ -144,6 +189,27 @@
 					{%   endfor  %}
 					</tbody>
 				</table>
+				<div class="btn-group">
+
+  					<!--button  class="btn btn-default"--><a class="btn btn-default" href="{{ request.path}}?s_name={{ request.GET.s_name }}&s_type={{ request.GET.s_type }}&page=1"><<</a><!--/button-->
+  					{% if  page_obj.has_previous %}
+  					<a  class="btn btn-default" href="{{  request.path }}?s_name={{ request.GET.s_name }}&s_type={{ request.GET.s_type }}&page={{ page_obj.previous_page_number }}">上一页</a>
+  					{% else %}
+  					<a class="btn btn-default disabled">上一页</a>
+  					{% endif %}
+
+
+  					{%  for i in page_obj.paginator.page_range %}
+  					<a  {% if page_obj.number == i %}class="btn btn-success  active" {% else %} class="btn btn-default "{% endif%} href="{{ request.path }}?s_name={{ request.GET.s_name }}&s_type={{ request.GET.s_type }}&page={{ i }}">{{ i }}</a>
+  					{% endfor %}
+
+  					{%  if page_obj.has_next %}
+  					<a class="btn btn-default" href="{{ request.path}}?s_name={{ request.GET.s_name }}&s_type={{ request.GET.s_type }}&page={{ page_obj.next_page_number }}">下一页</a>
+  					{% else %}
+  					<a class="btn btn-default disabled">下一页</a>
+  					{% endif %}
+  					<a class="btn btn-default" href="{{ request.path }}?s_name={{ request.GET.s_name }}&s_type={{ request.GET.s_type }}&page={{ page_obj.paginator.num_pages}}">>></a>
+				</div>
 			</div>
 			<!--x_content_end-->
 		</div>

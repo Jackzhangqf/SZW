@@ -77,6 +77,27 @@
 					{%   endfor  %}
 					</tbody>
 				</table>
+				<div class="btn-group">
+
+  					<!--button  class="btn btn-default"--><a class="btn btn-default" href="{{ request.path}}?page=1"><<</a><!--/button-->
+  					{% if  page_obj.has_previous %}
+  					<a  class="btn btn-default" href="{{  request.path }}?page={{ page_obj.previous_page_number }}}}">上一页</a>
+  					{% else %}
+  					<a class="btn btn-default disabled">上一页</a>
+  					{% endif %}
+
+
+  					{%  for i in page_obj.paginator.page_range %}
+  					<a  {% if page_obj.number == i %}class="btn btn-success  active" {% else %} class="btn btn-default "{% endif%} href="{{ request.path }}?page={{ i }}">{{ i }}</a>
+  					{% endfor %}
+
+  					{%  if page_obj.has_next %}
+  					<a class="btn btn-default" href="{{ request.path}}?page={{ page_obj.next_page_number }}">下一页</a>
+  					{% else %}
+  					<a class="btn btn-default disabled">下一页</a>
+  					{% endif %}
+  					<a class="btn btn-default" href="{{ request.path }}?page={{ page_obj.paginator.num_pages}}">>></a>
+				</div>
 			</div>
 			<!--x_content_end-->
 		</div>

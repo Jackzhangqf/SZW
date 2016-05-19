@@ -85,7 +85,7 @@
                             <ul class="nav side-menu">
                                 <li><a><i class="fa fa-home"></i> 主页 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
-                                        <li><a href="index.html">Dashboard</a>
+                                        <li><a href="/IoT/home">Home</a>
                                         </li>
                                         <li><a href="index2.html">Dashboard2</a>
                                         </li>
@@ -101,7 +101,7 @@
                                         </li>
                                         <li><a href="/IoT/userlogout/">退出当前用户</a>
                                         </li>
-                                        <li><a href="form_wizards.html">Form Wizard</a>
+                                        <li><a href={%   url 'useraccesslist'  %}>区域或设备访问权限配置</a>
                                         </li>
                                         <li><a href="form_upload.html">Form Upload</a>
                                         </li>
@@ -111,13 +111,13 @@
                                 </li>
                                 <li><a><i class="fa fa-desktop"></i> 设备 <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
-                                        <li><a href="general_elements.html"> 设备概览 </a>
+                                        <li><a href={%   url 'regionlist'  %}> 区域概览 </a>
                                         </li>
-                                        <li><a href="media_gallery.html"> 管理设备 </a>
+                                        <li><a href={%   url 'devlist'  %}> 设备列表 </a>
                                         </li>
-                                        <li><a href="typography.html"> 数据分析 </a>
+                                        <li><a href={%   url 'sensorlist'  %}>传感器列表 </a>
                                         </li>
-                                        <li><a href="icons.html"> 后端消息 </a>
+                                        <li><a href={%   url 'sensorthresholdlist'  %}> 传感器报警</a>
                                         </li>
                                         <li><a href="glyphicons.html">Glyphicons</a>
                                         </li>
@@ -133,7 +133,7 @@
                                 </li>
                                 <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
-                                        <li><a href="tables.html">Tables</a>
+                                        <li><a href="tables.html">数据分析</a>
                                         </li>
                                         <li><a href="tables_dynamic.html">Table Dynamic</a>
                                         </li>
@@ -374,9 +374,9 @@
     </div>
     <script src="/static/js/bootstrap.min.js"></script>
     <!-- chart js -->
-    <script src="/static/js/chartjs/chart.min.js"></script>
+    <!--script src="/static/js/chartjs/chart.min.js"></script>
     <!-- bootstrap progress js -->
-    <script src="/static/js/progressbar/bootstrap-progressbar.min.js"></script>
+    <!--script src="/static/js/progressbar/bootstrap-progressbar.min.js"></script-->
     <script src="/static/js/nicescroll/jquery.nicescroll.min.js"></script>
     <!-- icheck -->
     <script src="/static/js/icheck/icheck.min.js"></script>

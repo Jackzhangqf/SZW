@@ -83,12 +83,20 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'IoT',
-	'USER':'iot',
-	'PASSWORD':'123',
-	'HOST':'localhost',
-    }
+        'USER':'iot',
+        'PASSWORD':'123',
+        'HOST':'localhost',
+   }
 }
-
+#DATABASES = {
+ #   'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+ #       'NAME': 'test_db',
+ #   'USER':'mqtt_data1',
+ #   'PASSWORD':'Zqf5201314',
+ #   'HOST':'rm-bp112m68v70we0050o.mysql.rds.aliyuncs.com',
+ #   }
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -121,7 +129,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 FILE_CHARSET = 'utf-8'
 

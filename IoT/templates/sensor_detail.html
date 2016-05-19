@@ -1,5 +1,5 @@
 {%  extends "base_z.html" %}
-{%  block title %}{{  object.sensor_name }}》传感器信息{%  endblock %}
+{%  block title %}{{  object.sensor_name }}>>传感器信息{%  endblock %}
 {%  block main_content %}   
 <div class="row">
 	<div  class="col-md-12  col-sm-12  col-xs-12">
@@ -10,6 +10,7 @@
 					传感器详细信息
 					<small></small>
 				</h2>
+				
 				<ul class="nav  navbar-right  panel_toolbox">
 					<li>
 						<a href="" class="collapse-link">
@@ -58,7 +59,7 @@
 							<th scope="row">{{  object.id  }}</th>
 							<td>{{  object.sensor_id  }}</td>
 							<td>{{  object.sensor_info }}</td>
-							<td>{{  object.dev.dev_name }}</td>
+							<td><a href={% url 'devdetail' object.dev.id %}>{{  object.dev.dev_name }}</a></td>
 							<td>{{  object.sensor_type}}</td>
 							<td>{{  object.sensor_name}}</td>
 							<td>{{  object.date_time}}</td>
@@ -83,6 +84,7 @@
 					传感器数据
 					<small></small>
 				</h2>
+				
 				<ul class="nav  navbar-right  panel_toolbox">
 					<li>
 						<a href="" class="collapse-link">
@@ -112,13 +114,73 @@
 			</div>
 			<!--x_title_end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
 			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+			<div>
+			<form class="form-inline" role="form"  method="GET">
+				{%  csrf_token %}
+					<!--div class="form-group" >
+					<label  for="s_time">日期检索</label>
+   					<div  id="datetimepicker" date-date="2016-05-16 14:14:14" data-date-format="yyyy-mm-dd hh:ii:ss" data-link-field="s_time" data-link-format="yyyy-mm-dd hh:ii:ss">
+      						<input type="text"  class="form-control" id="s_time" 
+        						 placeholder="请输入名称" value="" readonly>
+   					</div>
+   					<input type="hidden" id="s_time" value="" /><br/>
+   					</div-->
+   					 <!--div class="input-append date" id="datetimepicker" data-date="12-02-2012" data-date-format="dd-mm-yyyy"-->
+   					 <div class="form-group">
+   					 <label  for="s_st">起始时间</label>
+    					<input type="text" name="s_st" value="{{request.GET.s_st}}" id="datetimepicker1" data-date-format="yyyy-mm-dd hh:ii:ss" readonly>
+    					</div>
+    					<div class="form-group">
+   					 <label  for="s_et">终止时间</label>
+    					<input type="text" name="s_et" value="{{request.GET.s_et}}" id="datetimepicker2" data-date-format="yyyy-mm-dd hh:ii:ss" readonly>
+    					</div>
+    					<!--/div--> 
+   					<div class="form-group">
+      						<label for="name">条件</label>
+      						<select class="form-control" name='s_gle'>
+      								{% if request.GET.s_gle %}
+      									{% if request.GET.s_gle == '0' %}
+      										<option value='0'  selected="selected">无</option>
+         										<option value='1' >大于等于</option>
+         										<option value='2'>小于等于</option>
+         									{% elif  request.GET.s_gle == '1' %}
+         										<option value='0' >无</option>
+         										<option value='1'  selected="selected">大于等于</option>
+         										<option value='2'>小于等于</option>
+         									{% elif  request.GET.s_gle == '2' %}
+         										<option value='0'  >无</option>
+         										<option value='1' >大于等于</option>
+         										<option value='2' selected="selected">小于等于</option>
+         									{% endif %}
+      								{% else %}
+         									<option value='0'  selected="selected">无</option>
+         									<option value='1' >大于等于</option>
+         									<option value='2'>小于等于</option>
+         								{% endif %}
+      						</select>
+   					</div>
+   					<div class="form-group">
+      						<label  for="s_value">数值</label>
+     					 	<input type="number" name="s_value" id="s_value" class="form-control " value='{{request.GET.s_value}}'>
+   					</div>
+   					<button type="submit" class="btn btn-default"> 搜索 </button>
+			</form>
+			 
+			<!--form method="GET">
+				<input type='number' name="s_value">
+				<input type="submit">
+			</form-->
+			</div>
 			<div  class="x_content">
+				
+				
+				<button>时间：{% if request.GET.s_st%}{{ request.GET.s_st }}{% else %}今天00:00:00{% endif %}  至  {% if request.GET.s_et%}{{ request.GET.s_et }}{% else %}23：59：59{% endif %} {% if request.GET.s_gle == '0' %} {% elif request.GET.s_gle == '1' %} 大于等于 {% elif request.GET.s_gle == '2' %} 小于等于 {% endif %}数值: {{request.GET.s_value}}{%if object.sensor_type == 'T' %}°C{% endif %}</button>
 				<table class="table  table-hover">
 					<thead>
 						<tr>
 							<th>序号</th>
 							<th>数据日期</th>
-							<th>数据</th>
+							<th>数据({%if object.sensor_type == 'T' %}°C{% endif %})</th>
 							<th>传感器名字</th>
 						</tr>
 					</thead>
@@ -126,7 +188,7 @@
 						{%  for  data in  object_list %}
 						<tr>
 							<th scope="row">{{  data.id  }}</th>
-							<td>{{  data.datetime  }}</td>
+							<td>{{  data.date_time|date:"Y-m-d H:i:s" }}</td>
 							<td>{{  data.data }}</td>
 							<td>{{  data.sensor.sensor_name }}</td>
 							
@@ -136,10 +198,162 @@
 					{%  endfor %}
 					</tbody>
 				</table>
+				<div id="main" style="height:550px;"></div>
+				<div class="btn-group">
+
+  					<!--button  class="btn btn-default"--><a class="btn btn-default" href="{{ request.path}}?s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page=1&s_gle={{request.GET.s_gle}}"><<</a><!--/button-->
+  					{% if  page_obj.has_previous %}
+  					<a  class="btn btn-default" href="{{  request.path }}?s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ page_obj.previous_page_number }}&s_gle={{request.GET.s_gle}}">上一页</a>
+  					{% else %}
+  					<a class="btn btn-default disabled">上一页</a>
+  					{% endif %}
+
+
+  					{%  for i in page_obj.paginator.page_range %}
+  					<a  {% if page_obj.number == i %}class="btn btn-success  active" {% else %} class="btn btn-default "{% endif%} href="{{ request.path }}?s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ i }}&s_gle={{request.GET.s_gle}}">{{ i }}</a>
+  					{% endfor %}
+
+  					{%  if page_obj.has_next %}
+  					<a class="btn btn-default" href="{{ request.path}}?s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ page_obj.next_page_number }}&s_gle={{request.GET.s_gle}}">下一页</a>
+  					{% else %}
+  					<a class="btn btn-default disabled">下一页</a>
+  					{% endif %}
+  					<a class="btn btn-default" href="{{ request.path }}?s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ page_obj.paginator.num_pages}}&s_gle={{request.GET.s_gle}}">>></a>
+				</div>
 			</div>
 			<!--x_content_end-->
+			
+
 		</div>
 	</div>
 </div>
-{%     endblock %}
 
+{%     endblock  %}
+
+
+{%  block  javasource %}
+<script src="/static/js/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="/static/js/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script src="/static/js/echart/echarts-all.js"></script>
+<script src="/static/js/echart/green.js"></script>
+
+<script type="text/javascript">
+	//$('#datetimepicker').datetimepicker();
+$('#datetimepicker1').datetimepicker({
+        //language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+        showMeridian: 1
+    });
+    //$('#datetimepicker').datetimepicker();
+$('#datetimepicker2').datetimepicker({
+        //language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+        showMeridian: 1
+    });
+
+    var myChart9 = echarts.init(document.getElementById('main'), theme);
+        myChart9.setOption({
+             title : {
+        text : '传感器数据折线图',
+        //subtext : 'dataZoom支持'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter : function (params) {
+            var date = new Date(params.value[0]);
+            data = date.getFullYear() + '-'
+                   + (date.getMonth() + 1) + '-'
+                   + date.getDate() + ' '
+                   + date.getHours() + ':'
+                   + date.getMinutes();
+            return data + '<br/>'
+                   + params.value[1] + ', ' 
+                   + params.value[1];
+        }
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    dataZoom: {
+        show: true,
+        start : 70
+    },
+    legend : {
+        data : ['series1']
+    },
+    grid: {
+        y2: 80
+    },
+    xAxis : [
+        {
+            type : 'time',
+            splitNumber:10
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name: 'series1',
+            type: 'line',
+            showAllSymbol: true,
+            symbolSize: function (value){
+                return Math.round(value[1]/10) + 2;
+            },
+            data: (function () {
+                var d = [];
+                var len = 0;
+                var value;
+                var temp="";
+                var list_str='{{ objects_json|safe }}';
+                var len="{{ object_list|length }}";
+                var list_data=eval('('+list_str+')');
+               for (var i=0;i<len;i++)
+               {
+               	temp=list_data[i].fields.date_time;
+               	//temp=temp.replace(/-/g,'/');
+               	//temp=temp.replace(/T/,' ');
+               	
+               	d.push([new Date(Date.parse(temp)),list_data[i].fields.data]);
+               }
+            
+                /*
+                while (len++ < 200) {
+                    d.push([
+                        new Date(2014, 9, 1, 0, len * 10000),
+                        (Math.random()*30).toFixed(2) - 0,
+                        (Math.random()*100).toFixed(2) - 0
+                    ]);
+                }
+                */
+                return d;
+            })()
+        }
+   ] 
+        });
+</script>
+	
+ {%  endblock %}
+
+{%  block headcss%}
+<link href="/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+{%  endblock %}

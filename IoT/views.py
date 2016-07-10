@@ -49,8 +49,49 @@ from  django.views.generic.list import  ListView
 from  django.views.generic.detail  import  DetailView
 from  django.views.generic.edit	   import   UpdateView,DeleteView,CreateView
 from  django.views.generic.base import TemplateView,RedirectView
+#--------------------------------------------------------query
+from django.db.models import Avg,Max,Min
 # Create your views here.
 none_url = '/IoT/home/'
+
+#@login_required(login_url='/IoT/userlogin/')
+def SearchV(request):
+	print "cmein0"
+	latest_data = None
+	if request.method=="GET" :
+		print "cmein1"
+		obj_pk=request.GET.get('q_id')
+		q_value=request.GET.get('q_value')
+		data={};
+		if obj_pk:
+			print "cmein2"
+			obj = get_object_or_404(SensorM,id=obj_pk)
+			#-----------------add  statistics functions 2016/05/26
+			#-----------------today function
+			today_struct=time.localtime()
+			q1 = DataM.objects.filter(sensor_id=obj_pk)
+			q2 = q1.filter(date_time__lte=datetime.datetime.today())
+			q3 = q2.filter(date_time__gte=datetime.datetime(today_struct.tm_year,today_struct.tm_mon,today_struct.tm_mday,0,0,0))
+			#今天最近的数据
+			if q_value=='1':
+				print "cmein3"
+				latest_data = q3.latest("date_time")
+					
+				data['date_time']= datetime.datetime.strftime(latest_data.date_time,"%Y-%m-%d  %H:%M:%S")
+				data['data']=latest_data.data
+				print "cmein4"
+			else:
+				print "cmein5"
+	else:
+		print "cmein6"
+	print  "cmein7"
+	#json_data = serializers.serialize("json", data)
+	#return JsonResponse(data)
+	#return HttpResponse(json_data,content_type="application/json")
+	return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+
 #UserProfileM
 #date:2016/2/19  
 class  UserProfileDetailV(DetailView):
@@ -204,7 +245,7 @@ class  RegionListV(RDBaseList):
 	template_name = "region_list.html"
 	model = RegionM
 	queryset = RegionM.objects.all()
-	paginate_by=1
+	paginate_by=10
 	def get_queryset(self):
 		queryset=super(RegionListV,self).get_queryset()
 		user = User.objects.get(username=self.request.user)
@@ -262,7 +303,7 @@ class  RegionDetailV(ListView):
 	template_name = "region_detail.html"
 	model = DevM
 	queryset = DevM.objects.all()
-	paginate_by=1
+	paginate_by=10
 	def get(self, request, *args, **kwargs):
 		self.object_list = self.get_queryset(**kwargs)
 		allow_empty = self.get_allow_empty()
@@ -339,7 +380,7 @@ class DevListV(RDBaseList):
 	template_name = "dev_list.html"
 	model = DevM
 	queryset = DevM.objects.all()
-	paginate_by=1
+	paginate_by=10
 	def get_queryset(self):
 		queryset=super(DevListV,self).get_queryset()
 		user = User.objects.get(username=self.request.user)
@@ -403,7 +444,7 @@ class  DevDetailV(ListView):
 	template_name = "dev_detail.html"
 	model = SensorM
 	queryset = SensorM.objects.all()
-	paginate_by=1
+	paginate_by=10
 	def get(self, request, *args, **kwargs):
 		self.object_list = self.get_queryset(**kwargs)
 		allow_empty = self.get_allow_empty()
@@ -595,10 +636,58 @@ class  SensorDetailV(ListView):
 		#print obj_pk
 		if  obj_pk:
 			obj = get_object_or_404(SensorM,id=obj_pk)
+			#-----------------add  statistics functions 2016/05/23
+			#-----------------today function
+			today_struct=time.localtime()
+			q1 = DataM.objects.filter(sensor_id=obj_pk)
+			q2 = q1.filter(date_time__lte=datetime.datetime.today())
+			q3 = q2.filter(date_time__gte=datetime.datetime(today_struct.tm_year,today_struct.tm_mon,today_struct.tm_mday,0,0,0))
+			#今天的平均值
+			today_avg = q3.aggregate(Avg('data'))
+			context['today_avg']=today_avg
+
+			#最近7天的平均值
+			today_7day_struct=time.localtime(time.time()-3600*24*7)
+			q4 = q2.filter(date_time__gte=datetime.datetime(today_7day_struct.tm_year,today_7day_struct.tm_mon,today_7day_struct.tm_mday,0,0,0))
+			today_7day_avg =  q4.aggregate(Avg('data'))
+			context['today_7day_avg'] = today_7day_avg
+
+			#本月的平均值
+			q5 = q2.filter(date_time__gte=datetime.datetime(today_struct.tm_year,today_struct.tm_mon,1,0,0,0))
+			today_month_avg =  q5.aggregate(Avg('data'))
+			context['today_month_avg'] = today_month_avg 
+			#本年的平均值
+			q6 = q2.filter(date_time__gte=datetime.datetime(today_struct.tm_year,1,1,0,0,0))
+			today_year_avg  =q6.aggregate(Avg('data'))
+			context['today_year_avg'] = today_year_avg
+			#今天的最大值
+			today_max = q3.aggregate(Max('data'))
+			context['today_max'] = today_max
+			today_max_objs = q3.filter(data=today_max['data__max'])
+			context['today_max_objs'] = today_max_objs[0:3]
+
+			#今天的最小值
+			today_min = q3.aggregate(Min('data'))
+			context['today_min'] = today_min
+			today_min_objs = q3.filter(data=today_min['data__min'])
+			context['today_min_objs'] = today_min_objs[0:3]
+			#----------------end today function
+			#-----------------
+
+			#-----------------
+			#-----------------end statistics functions
+			#今天最近的数据
+			if q3.order_by('-date_time'):
+				latest_data = q3.order_by('-date_time')[0]
+			else:
+				latest_data = None
+
+			context['data_latest'] =latest_data
 		else:
 			raise Http404(_('Invalid page Not accessprofile!'))
 		context['object'] = obj
 		context['objects_json']=serializers.serialize("json",context['object_list'])
+		
 		return  context
 	def  get_queryset(self,**kwargs):
 		queryset =  super(SensorDetailV,self).get_queryset()
@@ -634,10 +723,12 @@ class  SensorDetailV(ListView):
 		
 		#context["data_list"] = data_list[0:6]
 		#context["user"] = self.request.user
+
 		#-----------------search function 2016/05/17
 		s_st=self.request.GET.get('s_st')
 		s_et=self.request.GET.get('s_et')
 		s_value=self.request.GET.get('s_value')
+		s_select=self.request.GET.get('s_select')
 		if self.request.GET.get('s_gle'):
 			s_gle = int(self.request.GET.get('s_gle'))
 		else:
@@ -659,7 +750,7 @@ class  SensorDetailV(ListView):
 				#q3=q2
 		else:
 			q3=q1.exclude(date_time__lt=datetime.date.today()).order_by("-date_time")
-		#-----------------------search end
+		
 		#print type(s_value) #------->type is unicode
 		if s_value and s_gle:
 			try:
@@ -673,8 +764,13 @@ class  SensorDetailV(ListView):
 				q4=q3
 		else:
 			q4=q3
-
-		return  q4
+		q5=q4.order_by("date_time")#2016/05/25
+		if s_select:
+			q6=q5[::int(s_select)]
+		else:
+			q6=q5
+		#-----------------------search end
+		return  q6
 #DataM
 #SensorThresholdM
 class SensorThresholdListV(ListView):
@@ -742,7 +838,7 @@ class  SensorThresholdUpdateV(UpdateView):
 #/IoT/userlogin
 def  UserLoginV(request):
 	curtime = time.strftime("%Y-%m-%d  %H:%M:%S",time.localtime())
-
+	print "home1"
 	if request.method == 'POST':
 		print("POST")
 		username = request.POST['name']
@@ -763,7 +859,9 @@ from blog.models import UserForm
 #/IoT/accounts/
 @login_required(login_url='/IoT/userlogin/')
 def UserHomeV(request):
+	print "home"
 	query_user = User.objects.get(username=request.user)
 	test_form = TestForm()
 	#query_user.last_name = u'中文'
 	return response.TemplateResponse(request,'base_z.html',{"user":query_user})
+

@@ -79,24 +79,24 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
+#DATABASES = {
+ #   'default': {
+ #       'ENGINE': 'django.db.backends.mysql',
+ #       'NAME': 'IoT',
+ #       'USER':'iot',
+  #      'PASSWORD':'123',
+  #      'HOST':'localhost',
+  # }
+#}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'IoT',
-        'USER':'iot',
-        'PASSWORD':'123',
-        'HOST':'localhost',
-   }
+        'NAME': 'test_db',
+    'USER':'mqtt_data1',
+    'PASSWORD':'Zqf5201314',
+    'HOST':'rm-bp112m68v70we0050o.mysql.rds.aliyuncs.com',
+    }
 }
-#DATABASES = {
- #   'default': {
-#        'ENGINE': 'django.db.backends.mysql',
- #       'NAME': 'test_db',
- #   'USER':'mqtt_data1',
- #   'PASSWORD':'Zqf5201314',
- #   'HOST':'rm-bp112m68v70we0050o.mysql.rds.aliyuncs.com',
- #   }
-#}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators

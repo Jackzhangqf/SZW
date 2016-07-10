@@ -39,4 +39,7 @@ urlpatterns = patterns('',
             login_url='/IoT/userlogin/'),name='sensorthresholdupdate'),
      url(r'sensorthreshold/delete/(?P<pk>\d+)/$',login_required(SensorThresholdDeleteV.as_view(),
             login_url='/IoT/userlogin/'),name='sensorthresholddelete'),
+
+
+     url(r'search/$',SearchV,name='sensorsearch'),
 )

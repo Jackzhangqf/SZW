@@ -84,7 +84,7 @@
 							<th scope="row">{{  sensor.id  }}</th>
 							<td>{{  sensor.sensor_id  }}</td>
 							<td>{{  sensor.sensor_info }}</td>
-							<td><a href={% url 'devdetail' sensor.dev.id %}>{{  sensor.dev.dev_name }}</a></td>
+							<td><a href={% url 'devdetail' sensor.dev.id %}><font color="#0000FF">{{  sensor.dev.dev_name }}</font></a></td>
 							<td>{{  sensor.sensor_type}}</td>
 							<td>{{  sensor.sensor_name}}</td>
 							<td>{{  sensor.date_time}}</td>

@@ -3,6 +3,34 @@ from django.utils import timezone
 from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import User
+
+#2016/08/04
+'''
+ 准备添加相应的数据模型和数据字段
+ 
+ 对于设备模型：
+ （1）添加一个设备模型字段文件域
+ （2）添加一个UUID字段用来识别相应的设备ID ,起作用和设备编号类似
+ （3）添加一个设备图片文件域，用来存储设备实际安装位置
+ （4）添加一个存储对于本设备的MQTT 支持的topic名
+ 
+ 添加一个MQTT 数据模型
+ 
+ 添加一个设备维护记录模型
+ 
+ 添加一个存储文件的
+ 
+ 添加一个内部成员模型--------------》也可以沿用django提供的用户模型和用户组模型
+ 
+ 
+ 添加一个事件记录模型：
+ （1）要有一个必要的事件等级字段
+ （2）要有一个必要的事件描述字段
+ （3）要有一个必要的所属设备ID 外键
+ （4）要有一个时间字段
+'''
+
+
 #下面是在定义域时的一些选项Field options:
 #null   如果为True，将会把该域数据存储为NULL
 #blank    默认为真，该域允许为空

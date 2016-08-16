@@ -57,9 +57,10 @@
 						<tr>
 							<th scope="row">{{  object.id  }}</th>
 							<td>{{  object.dev_id }}</td>
-							<td>{{  object.dev_info }}</td>
-							<td><a href={% url 'regiondetail' object.region.id %}>{{  object.region.region_name }}</a></td>
 							<td>{{  object.dev_name}}</td>
+							
+							<td><a href={% url 'regiondetail' object.region.id %}><font color="#0000FF">{{  object.region.region_name }}</font></a></td>
+							<td>{{  object.dev_info }}</td>
 							<td>{{  object.access_key}}</td>
 							<td>{{  object.date_time}}</td>
 							

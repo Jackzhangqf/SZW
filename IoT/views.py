@@ -72,19 +72,19 @@ def SearchV(request):
 			q1 = DataM.objects.filter(sensor_id=obj_pk)
 			q2 = q1.filter(date_time__lte=datetime.datetime.today())
 			q3 = q2.filter(date_time__gte=datetime.datetime(today_struct.tm_year,today_struct.tm_mon,today_struct.tm_mday,0,0,0))
-			#今天最近的数据
+			#最近的数据
 			if q_value=='1':
 				print "cmein3"
-				latest_data = q3.latest("date_time")
+				latest_data = q1.latest("date_time")
 					
 				data['date_time']= datetime.datetime.strftime(latest_data.date_time,"%Y-%m-%d  %H:%M:%S")
-				data['data']=latest_data.data
+				data['data']=int(latest_data.data)/obj.data_scale
 				print "cmein4"
 			else:
 				print "cmein5"
 	else:
 		print "cmein6"
-	print  "cmein7"
+	#print  "cmein7"
 	#json_data = serializers.serialize("json", data)
 	#return JsonResponse(data)
 	#return HttpResponse(json_data,content_type="application/json")
@@ -535,7 +535,7 @@ class SensorListV(RDBaseList):
 	template_name = "sensor_list.html"
 	model = SensorM
 	queryset = SensorM.objects.all()
-	paginate_by=2
+	paginate_by=10
 	def  get_queryset(self):
 		queryset=super(SensorListV,self).get_queryset()
 		#get the user's dev_list----------start
@@ -676,9 +676,9 @@ class  SensorDetailV(ListView):
 
 			#-----------------
 			#-----------------end statistics functions
-			#今天最近的数据
-			if q3.order_by('-date_time'):
-				latest_data = q3.order_by('-date_time')[0]
+			#最近的数据
+			if q1.order_by('-date_time'):
+				latest_data = q1.order_by('-date_time')[0]
 			else:
 				latest_data = None
 
@@ -692,10 +692,12 @@ class  SensorDetailV(ListView):
 	def  get_queryset(self,**kwargs):
 		queryset =  super(SensorDetailV,self).get_queryset()
 		obj_pk=kwargs.get('sensor_pk',None)
+		scale_data = 1
 		#search_date=self.request.GET.get('date')
 		q_list = []
 		if  obj_pk :
 			obj = get_object_or_404(SensorM,id=obj_pk)
+			scale_data = int(obj.data_scale)
 			#obj = RegionM.objects.get(pk=obj_pk)
 			#print type(obj_pk)
 		else:
@@ -736,11 +738,18 @@ class  SensorDetailV(ListView):
 		q1= queryset.filter(id__in=q_list)
 		if s_st:
 			st_struct=time.strptime(s_st,"%Y-%m-%d  %H:%M:%S")
+			#st_sub8_time=time.mktime(st_struct)-3600*8
+			#st_sub8="%d-%d-%d 00:00:00"%(st_struct.tm_year,s_struct.tm_mon,st_struct.tm_mday)
+			#st_sub8_time = time.mktime(st_sub8)-8*3600
+			#st_struct=time.localtime(st_sub8_time)
+
 			q2=q1.exclude(date_time__lt=datetime.datetime(st_struct.tm_year,
 				st_struct.tm_mon,st_struct.tm_mday,st_struct.tm_hour,
 				st_struct.tm_min,st_struct.tm_sec))
 			if s_et:
 				et_struct=time.strptime(s_et,"%Y-%m-%d  %H:%M:%S")
+				#et_sub8_time=time.mktime(et_struct)-3600*8
+				#et_struct=time.localtime(et_sub8_time)
 				q3=q2.exclude(date_time__gt=datetime.datetime(et_struct.tm_year,
 					et_struct.tm_mon,et_struct.tm_mday,et_struct.tm_hour,
 					et_struct.tm_min,et_struct.tm_sec))
@@ -749,7 +758,13 @@ class  SensorDetailV(ListView):
 					st_struct.tm_mon,st_struct.tm_mday,23,59,59))
 				#q3=q2
 		else:
-			q3=q1.exclude(date_time__lt=datetime.date.today()).order_by("-date_time")
+			#now_struct = time.localtime(time.time())
+			#now_00_struct = time.strptime("%d-%d-%d 00:00:00"%(now_struct.tm_year,now_struct.tm_mon,now_struct.tm_mday),"%Y-%m-%d %H:%M:%S")
+			#now_time00=time.mktime(now_00_struct)-3600*8
+			#now_struct = time.localtime(now_time00)
+			#q3=q1.exclude(date_time__lt=datetime.datetime(now_struct.tm_year,now_struct.tm_mon,
+			#	now_struct.tm_mday,now_struct.tm_hour,now_struct.tm_min,now_struct.tm_sec)).order_by("-date_time")
+			q3 = q1.exclude(date_time__lt=datetime.date.today()).order_by("-date_time")
 		
 		#print type(s_value) #------->type is unicode
 		if s_value and s_gle:
@@ -757,9 +772,9 @@ class  SensorDetailV(ListView):
 				if s_gle==0:
 					q4=q3
 				elif s_gle==1:
-					q4=q3.filter(data__gte=float(s_value))#
+					q4=q3.filter(data__gte=float(s_value)*scale_data)#
 				elif s_gle==2:
-					q4=q3.filter(data__lte=float(s_value))#
+					q4=q3.filter(data__lte=float(s_value)*scale_data)#
 			except Exception, e:
 				q4=q3
 		else:
@@ -776,7 +791,7 @@ class  SensorDetailV(ListView):
 class SensorThresholdListV(ListView):
 	template_name = "sensorthreshold_list.html"
 	model = SensorThresholdM
-	paginate_by=2
+	paginate_by=10
 	def   get_queryset(self):
 		queryset= super(SensorThresholdListV,self).get_queryset()
 		return queryset.filter(user=self.request.user)

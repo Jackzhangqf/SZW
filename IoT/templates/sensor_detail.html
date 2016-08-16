@@ -35,7 +35,7 @@
 							<th scope="row">{{  object.id  }}</th>
 							<td>{{  object.sensor_id  }}</td>
 							<td>{{  object.sensor_info }}</td>
-							<td><a href={% url 'devdetail' object.dev.id %}>{{  object.dev.dev_name }}</a></td>
+							<td><a href={% url 'devdetail' object.dev.id %}><font color="#0000FF">{{  object.dev.dev_name }}</font></a></td>
 							<td>{{  object.sensor_type}}</td>
 							<td>{{  object.sensor_name}}</td>
 							<td>{{  object.date_time}}</td>
@@ -218,7 +218,7 @@
 			<!--x_content<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
 			<div>
 			<form class="form-inline" role="form"  method="GET">
-				{%  csrf_token %}
+				
 					
    					 <div class="form-group">
       						<label  for="s_select">绘图数据点间隔（默认为1）</label>
@@ -307,7 +307,30 @@
 
 
   					{%  for i in page_obj.paginator.page_range %}
-  					<a  {% if page_obj.number == i %}class="btn btn-success  active" {% else %} class="btn btn-default "{% endif%} href="{{ request.path }}?s_select={{request.GET.s_select}}&s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ i }}&s_gle={{request.GET.s_gle}}">{{ i }}</a>
+  					{% if page_obj.has_previous and page_obj.has_next %}
+  					 	{% if  i  == 1 or i == page_obj.paginator.num_pages  or   page_obj.number == i or  i == page_obj.number|add:'1' or  i == page_obj.number|add:'-1' %} 
+  					 	<a  {% if page_obj.number == i %}class="btn btn-success  active" {% else %} class="btn btn-default "{% endif%} href="{{ request.path }}?s_select={{request.GET.s_select}}&s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ i }}&s_gle={{request.GET.s_gle}}">{{ i }} </a>
+  					 	{% endif %}
+  					 	{% if  i == page_obj.number|add:'2' and   page_obj.number|add:'2' <  page_obj.paginator.num_pages %}
+  					 	<a class="btn btn-default "  href=" " >....</a>
+  					 	{% endif %}
+  					 	{% if  i == page_obj.number|add:'-2' and   page_obj.number|add:'-2' > 1 %}
+  					 	<a class="btn btn-default "  href=" " >....</a>
+  					 	{% endif %}
+  					{% elif not page_obj.has_previous %}
+  						{% if  i  == 1 or i == page_obj.paginator.num_pages or  i == page_obj.number|add:'2' or  i == page_obj.number|add:'1'  or i == page_obj.paginator.num_pages|add:'-2'  or i == page_obj.paginator.num_pages|add:'-1'  %}
+  					 	<a  {% if page_obj.number == i %}class="btn btn-success  active" {% else %} class="btn btn-default "{% endif%} href="{{ request.path }}?s_select={{request.GET.s_select}}&s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ i }}&s_gle={{request.GET.s_gle}}">{{ i }} </a> {% endif %}
+  					 	{% if   i == page_obj.number|add:'3' and   page_obj.number|add:'3'  <  page_obj.paginator.num_pages %}
+  					  	<a class="btn btn-default " href=" " >....</a>
+  					  	{% endif %}
+  					{% else %}
+  						{% if  i  == 1 or  i == 2 or  i == 3 or i == page_obj.paginator.num_pages or  i == page_obj.number|add:'-2' or  i == page_obj.number|add:'-1'   %}
+  						<a  {% if page_obj.number == i %}class="btn btn-success  active" {% else %} class="btn btn-default "{% endif%}  href="{{ request.path }}?s_select={{request.GET.s_select}}&s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ i }}&s_gle={{request.GET.s_gle}}">{{ i }} </a>
+  						{% endif %}
+  						{% if  i == page_obj.number|add:'-3'  and   page_obj.number|add:'-3' <  page_obj.paginator.num_pages %} 
+  						<a class="btn btn-default " href=" " >....</a>
+  						{% endif %}
+  					{% endif %}
   					{% endfor %}
 
   					{%  if page_obj.has_next %}
@@ -316,6 +339,14 @@
   					<a class="btn btn-default disabled">下一页</a>
   					{% endif %}
   					<a class="btn btn-default" href="{{ request.path }}?s_select={{request.GET.s_select}}&s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&page={{ page_obj.paginator.num_pages}}&s_gle={{request.GET.s_gle}}">>></a>
+					<div class="input-group">
+						<span class="input-group-btn">
+							<a class="btn btn-default"  href="." id="page_button" type="button">跳转到</a>
+						</span>
+						<input type="number" id="page_input" class="form-control" value="" name="">
+						
+					</div>
+  					
 				</div>
 			</div>
 			<!--x_content_end-->
@@ -360,6 +391,20 @@
 <script src="/static/js/echart/green.js"></script>
 
 <script type="text/javascript">
+
+$("#page_input").focusout(function(){
+	x=$("#page_input").val();
+	if (x <= '{{ page_obj.paginator.num_pages }}')
+	{
+		y="{{ request.path }}?s_select={{request.GET.s_select}}&s_st={{request.GET.s_st}}&s_et={{request.GET.s_et}}&s_value={{request.GET.s_value}}&s_gle={{request.GET.s_gle}}&page="+x;
+	}
+	else
+	{
+		y='.';
+	}
+
+	$("#page_button").attr("href",y);
+});
 	//$('#datetimepicker').datetimepicker();
 function sortNumber(a,b)
 {
@@ -378,12 +423,15 @@ var dat= (function () {
                for (var i=0;i<len;i++)
                {
                	temp=list_data[i].fields.date_time;
+               	//alert(temp);
                	//temp=temp.replace(/-/g,'/');
                	//temp=temp.replace(/T/,' ');
                	data=list_data[i].fields.data/scale;
                	d.push([new Date(Date.parse(temp)),data]);
                }
-               if(d.length>1){
+               //alert(temp);
+               //alert(d[0][0].toLocaleString());
+               if(d.length>1){0
            		var len1=d.length-1;
   		$('#btn_draw').text("起点时间："+d[0][0].toLocaleString()+"		终点时间："+d[len1][0].toLocaleString()+'    数据点数:'+len1.toString());
            	}
@@ -701,7 +749,7 @@ function now_data(){
     		{
     			//alert(data.date_time);
     			option.series[0].data[0].name = data.date_time;
-    			option.series[0].data[0].value = (Number(data.data)/100).toFixed(2) ;
+    			option.series[0].data[0].value = (Number(data.data)).toFixed(2) ;
     			myChart8.setOption(option,true);
 
     		},
